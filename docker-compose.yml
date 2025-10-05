@@ -1,0 +1,47 @@
+services:
+  # Servicio de la Base de Datos (PostgreSQL)
+  db:
+    image: postgres:15-alpine
+    container_name: gymbro_db
+    environment:
+      - POSTGRES_USER=gymbro_user
+      - POSTGRES_PASSWORD=gymbro_password
+      - POSTGRES_DB=gymbro_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+  # Servicio del Backend (Nuestra API con FastAPI)
+  api:
+    container_name: gymbro_api
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/.env
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8001:8000"
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  # Servicio del Frontend (Nuestra App con React)
+  frontend:
+    container_name: gymbro_frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

@@ -1,0 +1,5 @@
+fastapi[all]
+sqlalchemy
+asyncpg # El driver asincrónico para PostgreSQL
+alembic
+pydantic-settings
