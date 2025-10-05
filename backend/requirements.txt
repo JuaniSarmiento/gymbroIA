@@ -1,5 +1,6 @@
 fastapi[all]
 sqlalchemy
-asyncpg # El driver asincrónico para PostgreSQL
+asyncpg
 alembic
 pydantic-settings
+passlib[bcrypt]
